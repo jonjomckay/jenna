@@ -66,7 +66,7 @@ class GoogleMusic(object):
 			tag.artist = track.get('artist').__str__()
 			tag.album = track.get('album').__str__()
 			tag.year = track.get('year')
-			tag.track = (track.get('discNumber'), track.get('trackNumber'))
+			tag.track = (track.get('trackNumber'), track.get('totalTracks'))
 			tag.band = track.get('albumArtist').__str__()
 			tag.append({
 				'frameid': 'APIC',
