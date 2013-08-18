@@ -1,11 +1,11 @@
 import os
 import sys
-import pyid3lib
 import urllib
 import cStringIO
 
 from gmusicapi import Webclient, Mobileclient
 from urlparse import urlparse, parse_qsl
+from mutagen import easyid3, id3, mp3
 
 class GoogleMusic(object):
 	def __init__(self):
@@ -61,19 +61,20 @@ class GoogleMusic(object):
 
 			print 'saved'
 
-			tag = pyid3lib.tag(destination)
-			tag.title = track.get('title').__str__()
-			tag.artist = track.get('artist').__str__()
-			tag.album = track.get('album').__str__()
-			tag.year = track.get('year')
-			tag.track = (track.get('trackNumber'), track.get('totalTracks'))
-			tag.band = track.get('albumArtist').__str__()
-			tag.append({
-				'frameid': 'APIC',
-				'mimetype': 'image/jpeg',
-				'picturetype': 3,
-				'data': urllib.urlopen(track.get('albumArtRef')[0].get('url')).read()
-			})
-			tag.update()
+			tag = easyid3.EasyID3()
+			tag['title'] = track.get('title').__str__()
+			tag['artist'] = track.get('artist').__str__()
+			tag['album'] = track.get('album').__str__()
+			tag['date'] = track.get('year').__str__()
+			tag['discnumber'] = track.get('discNumber').__str__()
+			tag['tracknumber'] = track.get('trackNumber').__str__()
+			tag['performer'] = track.get('albumArtist').__str__()
+			tag.save(destination)
+
+			tag = mp3.MP3(destination)
+			tag.tags.add(
+				id3.APIC(3, 'image/jpeg', 3, 'Front cover', urllib.urlopen(track.get('albumArtRef')[0].get('url')).read())
+			)
+			tag.save()
 
 			print 'tagged'
