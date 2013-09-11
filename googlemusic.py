@@ -34,7 +34,7 @@ class GoogleMusic(object):
 			return results
 
 	def get_track(self, store_id):
-		return self.mobileclient.get_track(store_id)
+		return self.mobileclient.get_track_info(store_id)
 
 	def save_stream(self, track, destination):
 		if self.is_authenticated():
