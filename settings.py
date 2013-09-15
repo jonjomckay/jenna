@@ -2,25 +2,25 @@ import os
 import ConfigParser
 
 class Settings(object):
-	def __init__(self):
-		self.settings = ConfigParser.ConfigParser()
-		
-		self.path = os.environ.get('XDG_CONFIG_HOME', os.path.join(os.path.expanduser("~"), '.config', 'alfonso', 'settings.ini'))
+    def __init__(self):
+        self.settings = ConfigParser.ConfigParser()
 
-		if not os.path.exists(self.path):
-			if not os.path.exists(os.path.dirname(self.path)):
-				os.makedirs(os.path.dirname(self.path))
+        self.path = os.environ.get('XDG_CONFIG_HOME', os.path.join(os.path.expanduser("~"), '.config', 'alfonso', 'settings.ini'))
 
-			with open(self.path, 'a') as config_file:
-				config_file.write('[alfonso]')
+        if not os.path.exists(self.path):
+            if not os.path.exists(os.path.dirname(self.path)):
+                os.makedirs(os.path.dirname(self.path))
 
-		self.settings.read(self.path)
+            with open(self.path, 'a') as config_file:
+                config_file.write('[alfonso]')
 
-	def get(self, key):
-		return self.settings.get('alfonso', key)
+        self.settings.read(self.path)
 
-	def set(self, key, value):
-		self.settings.set('alfonso', key, value)
+    def get(self, key):
+        return self.settings.get('alfonso', key)
 
-		with open(self.path, 'w') as config_file:
-			self.settings.write(config_file)
+    def set(self, key, value):
+        self.settings.set('alfonso', key, value)
+
+        with open(self.path, 'w') as config_file:
+            self.settings.write(config_file)
