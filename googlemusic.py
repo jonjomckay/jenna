@@ -39,8 +39,6 @@ class GoogleMusic(object):
 	def save_stream(self, track, destination):
 		if self.is_authenticated():
 			with open(destination, 'w+b') as f:
-				# f.write(self.webclient.get_stream_audio(track.get('storeId')))
-
 				urls = self.webclient.get_stream_urls(track.get('storeId'))
 
 				if len(urls) == 1:
@@ -59,8 +57,6 @@ class GoogleMusic(object):
 					audio = self.webclient.session._rsession.get(url).content
 					f.write(audio)
 
-			print 'saved'
-
 			tag = easyid3.EasyID3()
 			tag['title'] = track.get('title').__str__()
 			tag['artist'] = track.get('artist').__str__()
@@ -76,5 +72,3 @@ class GoogleMusic(object):
 				id3.APIC(3, 'image/jpeg', 3, 'Front cover', urllib.urlopen(track.get('albumArtRef')[0].get('url')).read())
 			)
 			tag.save()
-
-			print 'tagged'

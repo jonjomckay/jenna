@@ -122,10 +122,6 @@ class Alfonso:
 		download_thread = DownloadThread(self, row)
 		download_thread.start()
 
-		# print self.download_list_store.get_value(row, 4)
-
-		# self.api.save_stream(store_id, self.preferences_directory_chooser.get_filename())
-
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 app = Alfonso()
