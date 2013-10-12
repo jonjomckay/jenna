@@ -36,7 +36,8 @@ class DownloadThread(threading.Thread):
 
             track = self.app.api.get_track(store_id)
 
-            filename = track.get('artist') + ' - ' + track.get('album') + ' - ' + track.get('trackNumber').__str__() + ' - '+ track.get('title') + '.mp3'
+            initial_filename = track.get('artist') + ' - ' + track.get('album') + ' - ' + track.get('trackNumber').__str__() + ' - '+ track.get('title') + '.mp3'
+            filename = "".join([c for c in initial_filename if c.isalnum() or c in (' ', '.', '-', '_')]).rstrip()
             destination = os.path.join(self.app.settings.get('download_directory'), filename)
 
             fetch_thread = FetchThread(self.app, track, destination)
