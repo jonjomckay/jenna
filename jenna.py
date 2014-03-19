@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 from __future__ import division
 
 import signal
@@ -8,7 +9,7 @@ from settings import Settings
 from googlemusic import GoogleMusic
 from threads import DownloadThread, SearchThread
 
-class Alfonso(object):
+class Jenna(object):
     def __init__(self):
         GObject.threads_init()
 
@@ -114,6 +115,6 @@ class Alfonso(object):
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-app = Alfonso()
+app = Jenna()
 
 Gtk.main()
