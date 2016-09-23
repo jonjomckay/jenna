@@ -10,7 +10,7 @@ class GoogleMusic(object):
         self.mobileclient = Mobileclient()
 
     def is_authenticated(self):
-        if self.webclient.is_authenticated():
+        if not self.webclient.is_authenticated():
             if self.mobileclient.is_authenticated():
                 return True
 
@@ -19,14 +19,14 @@ class GoogleMusic(object):
     def login(self, username, password):
         if not self.is_authenticated():
             try:
-                self.mobileclient.login(username, password)
+                self.mobileclient.login(username, password, Mobileclient.FROM_MAC_ADDRESS)
                 self.webclient.login(username, password)
-            except:
-                raise Exception('Couldn\'t log into Google Music')
+            except Exception as e:
+                raise Exception('Couldn\'t log into Google Music: ' + e.message)
 
     def search(self, query, kind):
         if self.is_authenticated():
-            results = self.mobileclient.search_all_access(query)[kind + '_hits']
+            results = self.mobileclient.search(query)[kind + '_hits']
 
             return results
 
@@ -36,21 +36,12 @@ class GoogleMusic(object):
     def save_stream(self, track, destination):
         if self.is_authenticated():
             with open(destination, 'w+b') as stream_file:
-                urls = self.webclient.get_stream_urls(track.get('storeId'))
+                url = self.mobileclient.get_stream_url(track.get('storeId'))
 
-                if len(urls) == 1:
-                    stream_file.write(self.webclient.session._rsession.get(urls[0]).content)
-
-                range_pairs = [[int(s) for s in val.split('-')]
-                               for url in urls
-                               for key, val in parse_qsl(urlparse(url)[4])
-                               if key == 'range']
-
-                for url, (start, end) in zip(urls, range_pairs):
-                    stream_file.truncate(start)
-                    stream_file.seek(0, 2)
-                    audio = self.webclient.session._rsession.get(url).content
-                    stream_file.write(audio)
+                stream_file.truncate(0)
+                stream_file.seek(0, 2)
+                audio = self.webclient.session._rsession.get(url).content
+                stream_file.write(audio)
 
             tag = easyid3.EasyID3()
             tag['title'] = track.get('title').__str__()
